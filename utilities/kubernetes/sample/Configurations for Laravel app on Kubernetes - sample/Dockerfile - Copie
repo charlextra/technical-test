@@ -1,0 +1,98 @@
+# composer image vendor stage
+FROM composer:1.9 as vendor
+
+COPY database/ database/
+
+COPY composer.json composer.json
+COPY composer.lock composer.lock
+
+RUN composer install \
+        --ignore-platform-reqs \
+        --no-interaction \
+        --no-plugins \
+        --no-scripts \
+        --prefer-dist \
+        --no-dev
+
+# node image nodejs stage
+FROM node:10.18 as nodejs
+
+RUN mkdir -p /app/public
+RUN mkdir -p /public
+
+COPY package.json webpack.mix.js /app/
+COPY public/ /public/
+COPY resources/sass/ /app/resources/sass/
+COPY resources/assets/ /app/resources/assets/
+COPY resources/js/ /app/resources/js/
+COPY resources/views/js/ /app/resources/views/js/
+COPY resources/views/components/ /app/resources/views/components/
+COPY resources/views/configurations/layouts/ /app/resources/views/configurations/layouts/
+
+WORKDIR ./app
+
+RUN npm install && npm run production
+
+# Base image
+FROM php:7.4.1-apache
+
+COPY 00-default.conf /etc/apache2/sites-available/000-default.conf
+
+COPY . /var/www/html
+
+RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www
+
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        zlib1g-dev \
+        libxml2-dev \
+        libzip-dev \
+        libonig-dev \
+        graphviz \
+
+    && docker-php-ext-configure gd \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-install zip \
+    && docker-php-source delete
+
+RUN a2enmod rewrite
+RUN a2enmod ssl
+RUN service apache2 restart
+EXPOSE 80
+
+#Local node js
+# Install Node (with NPM), and Yarn (via package manager for Debian)
+# https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions
+
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get update \
+ && apt-get install -y \
+ nodejs && npm install -g yarn \
+ && apt-get -y install sudo \
+ && sudo npm install -g puppeteer --unsafe-perm=true \
+ && sudo apt-get install -y libgbm-dev
+# Pupeteer binaries
+RUN apt-get install --assume-yes gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+
+# vendor stage
+COPY --from=vendor /app/vendor/ /var/www/html/vendor/
+COPY browser.js /var/www/html/vendor/spatie/browsershot/bin/
+
+# nodejs stage
+COPY --from=nodejs /public/ /var/www/html/public/
+COPY --from=nodejs /app/public/ /var/www/html/public/
+COPY --from=nodejs /app/mix-manifest.json /var/www/html/mix-manifest.json
+COPY --from=nodejs /app/node_modules/ /var/www/html/node_modules/
+
+RUN php artisan config:clear \
+&& php artisan view:clear \ 
+&& php artisan route:clear \
+&& php artisan cache:clear \
+&& php artisan config:cache \
+&& php artisan storage:link

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sgapmultitenant
+  labels:
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: php
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: php
+        tier: backend
+    spec:
+      volumes:
+      - name: dir
+        hostPath:
+          path: /code            
+      containers:
+      - name: sgapmultitenant
+        image: charlemagnepa/sgapmultitenant
+        volumeMounts:
+        - name: dir
+          mountPath: /code
+      imagePullSecrets:
+      - name: regcred
+      initContainers:
+      - name: install
+        image: busybox
+        volumeMounts:
+        - name: dir
+          mountPath: /code
+        command:
+        - cp
+        - "-r"
+        - "/var/www/."
+        - "/code/app"

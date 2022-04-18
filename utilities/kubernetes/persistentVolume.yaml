@@ -1,0 +1,12 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+   name: dir
+spec:
+  capacity:
+    storage: 35Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /code/app
+    type: DirectoryOrCreate
