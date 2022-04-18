@@ -29,8 +29,8 @@ class UserController extends Controller
         if ($request->ajax()) {
             return datatables()->of($users)
             ->addColumn('action', function ($row) {
-                $html = '<a href="#" class="btn btn-sm btn-outline-success btn-edit" edit-line="'. $row->id .'">Edit</a> ';
-                $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm btn-outline-danger btn-delete">Del</button>';
+                $html = '<a href="#" class="btn btn-sm btn-outline-success btn-edit" edit-line="'. $row->id .'"  data-bs-toggle="modal" data-bs-target="#modal-default">Edit</a> ';
+                $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm btn-outline-danger btn-delete">Delete</button>';
                 return $html;
             })->toJson();
         }

@@ -30,7 +30,7 @@ class GroupController extends Controller
                 ->addColumn('action', function ($row) {
                     $html = '<a href="#" class="btnUsers btn btn-sm  btn-outline-info " user-button-line="'. $row->id .'" user-button-line-name="'. $row->title .'" data-bs-toggle="modal" data-bs-target="#modal-user">Users</a> ';
                     $html .= '<a href="#" class="btn btn-sm  btn-outline-success btn-edit" edit-line="'. $row->id .'" data-bs-toggle="modal" data-bs-target="#modal-default">Edit</a> ';
-                    $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm  btn-outline-danger btn-delete">Del</button>';
+                    $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm  btn-outline-danger btn-delete">Delete</button>';
                     return $html;
                 })->toJson();
         }

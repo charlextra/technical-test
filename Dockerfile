@@ -47,8 +47,6 @@ RUN composer install \
 
 RUN composer dump-autoload
 
-RUN php artisan down --message="Application in maintenance. Please try again after 10 minutes." --retry=10
-
 RUN apt-get install --assume-yes mariadb-client-10.3
 
 RUN php artisan config:clear \
