@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -16,6 +17,7 @@ class GroupController extends Controller
     public function index(Request $request)
     {
         $groups = Group::all();
+        $users = User::all();
 
         $headers = collect($groups->first())->keys()->map(function ($item) {
             return  ['data' => $item , 'name' => $item];
@@ -26,13 +28,14 @@ class GroupController extends Controller
         if ($request->ajax()) {
             return datatables()->of($groups)
                 ->addColumn('action', function ($row) {
-                    $html = '<a href="#" class="btn btn-sm  btn-outline-success btn-edit" edit-line="'. $row->id .'" data-bs-toggle="modal" data-bs-target="#modal-default">Edit</a> ';
+                    $html = '<a href="#" class="btnUsers btn btn-sm  btn-outline-info " user-button-line="'. $row->id .'" user-button-line-name="'. $row->title .'" data-bs-toggle="modal" data-bs-target="#modal-user">Users</a> ';
+                    $html .= '<a href="#" class="btn btn-sm  btn-outline-success btn-edit" edit-line="'. $row->id .'" data-bs-toggle="modal" data-bs-target="#modal-default">Edit</a> ';
                     $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm  btn-outline-danger btn-delete">Del</button>';
                     return $html;
                 })->toJson();
         }
 
-        return view('groups.index', compact('groups', 'columns'));
+        return view('groups.index', compact('groups', 'users', 'columns'));
     }
 
     /**

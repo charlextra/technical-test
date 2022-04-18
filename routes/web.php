@@ -22,3 +22,5 @@ Route::resource('groups', 'App\Http\Controllers\GroupController');
 Route::resource('users', 'App\Http\Controllers\UserController');
 
 Route::post('edit', 'App\Http\Controllers\AjaxController@edit');
+Route::post('usersList', 'App\Http\Controllers\AjaxController@usersList');
+Route::post('assignusers', 'App\Http\Controllers\UserController@assignments');

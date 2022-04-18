@@ -14,12 +14,9 @@ cat /etc/motd
 echo "Positioning to /var/www/html ..."
 cd /var/www/html
 
-echo "Putting application in maintenance..."
-php artisan down --message="Application in maintenance. Please try again after 10 minutes." --retry=10
-
 echo "Running seeders..."
-php artisan db:seed --force \
-&& php artisan up
+php artisan migrate --force \
+&& php artisan db:seed --force
 
 echo "Starting ssh..."
 # starting sshd process

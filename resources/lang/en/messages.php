@@ -15,4 +15,12 @@ return [
 
     'Create' => 'Create',
     'Edit' => 'Edit',
+    'NoRelationWithUsers'=> 'No Relation With Users',
+    'User' => 'User',
+    'AssignUser' => 'Assign User',
+    'Submit' => 'Submit',
+    'Close' => 'Close',
+    'Link' => 'Link',
+
+
 ];

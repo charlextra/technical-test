@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Validator;
+use Arr;
+use Str;
 
 class UserController extends Controller
 {
@@ -25,11 +28,11 @@ class UserController extends Controller
 
         if ($request->ajax()) {
             return datatables()->of($users)
-                ->addColumn('action', function ($row) {
-                    $html = '<a href="#" class="btn btn-sm btn-outline-success btn-edit" edit-line="'. $row->id .'">Edit</a> ';
-                    $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm btn-outline-danger btn-delete">Del</button>';
-                    return $html;
-                })->toJson();
+            ->addColumn('action', function ($row) {
+                $html = '<a href="#" class="btn btn-sm btn-outline-success btn-edit" edit-line="'. $row->id .'">Edit</a> ';
+                $html .= '<button data-rowid="' . $row->id . '" class="btn btn-sm btn-outline-danger btn-delete">Del</button>';
+                return $html;
+            })->toJson();
         }
 
         return view('users.index', compact('users', 'columns'));
@@ -77,10 +80,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+        public function edit($id)
+        {
         //
-    }
+        }
 
     /**
      * Update the specified resource in storage.
@@ -106,4 +109,38 @@ class UserController extends Controller
         User::find($id)->delete();
         return ['success' => true, 'message' => 'Deleted Successfully'];
     }
-}
+
+        /**
+     * Sync assignments.
+     *
+     * @param Request $request
+     *
+     * @bodyParam model string required
+     * @bodyParam model_id integer required
+     * @bodyParam users array
+     * @bodyParam assignments array required
+     * @bodyParam entity_ids array required
+     * @bodyParam entity_ids.* integer required
+     * @responseFile responses/created.json
+     *
+     * @return JsonResponse|RedirectResponse
+     * @throws App\Exceptions\AssignUserException
+     */
+        public function assignments(Request $request)
+        {
+        $appPrefix = 'App\Models';
+        $modelName = $appPrefix.'\\'.$request->input('model');
+
+        $filtered = Arr::except($request->all(), ['_token', 'dataTable2_length', 'model_id', 'model', 'assignments']);
+        [$keys, $values] = Arr::divide($filtered);
+        $assignments = [];
+        foreach ($keys as $assignment) {
+            $assignments[] = Str::replaceArray('user_', [''], $assignment);
+        }
+
+        $model = $modelName::find($request->input('model_id'));
+        $model->users()->sync(Arr::flatten($assignments));
+
+            return redirect()->back()->with(['success' => true, 'message' => 'Successfully Assigned']);
+        }
+    }

@@ -87,9 +87,9 @@ RUN apt-get install -y --no-install-recommends dialog \
     && echo "$SSH_PASSWD" | chpasswd 
 
 COPY utilities/build-files/sshd_config /etc/ssh/
-COPY utilities/build-files/init.sh /usr/local/bin/
+COPY utilities/build-files/init_container.sh /usr/local/bin/
 
-RUN chmod u+x /usr/local/bin/init.sh
+RUN chmod u+x /usr/local/bin/init_container.sh
 RUN chmod 644 /var/www/html/.htaccess
 
 ENV PORT 80
