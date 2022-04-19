@@ -12,7 +12,7 @@ T E C H N I C A L  T E S T  C O N T A I N E R  L I N U X
 This commands are helpers to start an environment with docker for technical-test.
 
 ## Installation
-Replace the content of variables starting with $ by the appropriate value and use the command [docker](https://www.docker.com/get-started) to build the container.
+Before starting make sure you have created a local MySQL database technical_test encoded in UTF8-mb4. Now in you admin console replace the content of variables starting with $ by the appropriate value and use the command [docker](https://www.docker.com/get-started) to build the container. 
 ```bash
 docker build -t $IMAGE_NAME --no-cache .
 ```
@@ -56,13 +56,22 @@ Clear the cache and restart apache service. Use the ip address displayed by apac
 # refresh the cache
 php artisan config:cache
 
+#build assets
+npm run prod
+
 # run the migrations
 php artisan migrate --force
+
+# dump autoload files
+composer dump-autoload
 
 # seed the database
 php artisan db:seed --force
 
 ```
+### Application access
+After all successfull steps the application will be accessible on http://localhost
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
