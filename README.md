@@ -37,6 +37,9 @@ Update the env.example file in project with valid values copy paste and rename i
 ```bash
 # add environment file with values
 cp .env.example .env
+
+# update .env file
+nano .env
 ```
 Change database hosts to [host.docker.internal](#) be able to connect with local databases.
 
