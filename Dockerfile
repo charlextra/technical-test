@@ -10,6 +10,7 @@ RUN chmod -R 755 /var/www/html
 RUN chmod -R 775 /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/public/storage
 RUN chmod -R 775 /var/www/html/storage
+RUN mkdir -p /var/www/html/storage/logs
 
 RUN apt-get update && apt-get install -y \
         unzip \
@@ -69,6 +70,8 @@ RUN apt-get update \
  && apt-get -y install sudo \
  && apt-get -y install nano \
  && sudo apt-get install -y libgbm-dev
+
+RUN npm install && npm run prod
 
 # custom files
 COPY utilities/build-files/00-default.conf /etc/apache2/sites-available/000-default.conf
