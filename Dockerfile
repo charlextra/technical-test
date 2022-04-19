@@ -54,8 +54,7 @@ RUN php artisan config:clear \
 && php artisan route:clear \
 && php artisan cache:clear \
 && php artisan config:cache \
-&& php artisan storage:link \
-&& php artisan logs:clear
+&& php artisan storage:link
 
 
 
@@ -69,7 +68,6 @@ RUN apt-get update \
  && npm install -g yarn \
  && apt-get -y install sudo \
  && apt-get -y install nano \
- && sudo npm install -g puppeteer --unsafe-perm=true \
  && sudo apt-get install -y libgbm-dev
 
 # custom files
@@ -96,5 +94,3 @@ ENV SSH_PORT 2222
 EXPOSE 80 2222
 EXPOSE 443 
 EXPOSE 8080
-
-ENTRYPOINT ["init_container.sh"]

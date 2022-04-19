@@ -11,6 +11,10 @@ T E C H N I C A L  T E S T  C O N T A I N E R  L I N U X
 EOL
 cat /etc/motd
 
+echo "Starting application..."
+# Get environment variables to show up in SSH session
+eval $(printenv | sed -n "s/^\([^=]\+\)=\(.*\)$/export \1=\2/p" | sed 's/"/\\\"/g' | sed '/=/s//="/' | sed 's/$/"/' | sed $'s/\r$//' >> /etc/profile)
+
 echo "Positioning to /var/www/html ..."
 cd /var/www/html
 

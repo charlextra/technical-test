@@ -16,14 +16,21 @@ Replace the content of variables starting with $ by the appropriate value and us
 ```bash
 docker build -t $IMAGE_NAME --no-cache .
 ```
-### Description of variable
+### Description of variables
 $IMAGE_NAME is the image name. Example technical-test:latest.  
+$CONTAINER_ID is the container name. Example f42199966c22 .  
 
 ## Usage
 Update the env.example file in project with valid values copy paste and rename it to .env
 ```bash
-# add environment file with values
-cp .env.example .env
+# run image
+docker run -d -p 80:80 $IMAGE_NAME
+
+# retreive container
+docker ps -a
+
+# enter the container
+docker exec -it $CONTAINER_ID bash
 ```
 
 ### Change database host in env file
@@ -33,14 +40,12 @@ Update this
 ```
 APP_ENV=XXXXX
 DB_HOST=XXXXX
-ACTIVITY_LOGGER_DB_HOST=XXXXX
 MIX_ASSET_URL=XXXXX
 ASSET_URL=XXXXX
 ```
 to this
 ```
 APP_ENV=local
-DB_HOST=host.docker.internal
 DB_HOST=host.docker.internal
 MIX_ASSET_URL=http://localhost/public
 ASSET_URL=http://localhost/public
@@ -51,14 +56,11 @@ Clear the cache and restart apache service. Use the ip address displayed by apac
 # refresh the cache
 php artisan config:cache
 
-# restart apache service
-service apache2 restart
+# run the migrations
+php artisan migrate --force
 
-# run entrypoint
-./init_container.sh
-
-# run supervisor
-./usr/bin/supervisord
+# seed the database
+php artisan db:seed --force
 
 ```
 ## Contributing
