@@ -20,11 +20,6 @@ docker build -t $IMAGE_NAME --no-cache .
 $IMAGE_NAME is the image name. Example technical-test:latest.  
 $CONTAINER_ID is the container name. Example f42199966c22 .  
 ## Usage
-Update the env.example file in project with valid values copy paste and rename it to .env
-```bash
-# add environment file with values
-cp .env.example .env
-```
  Use this command to create a docker container
 ```bash
 # run image
@@ -38,6 +33,11 @@ docker exec -it $CONTAINER_ID bash
 ```
 
 ### Change database host in env file
+Update the env.example file in project with valid values copy paste and rename it to .env
+```bash
+# add environment file with values
+cp .env.example .env
+```
 Change database hosts to [host.docker.internal](#) be able to connect with local databases.
 
 Update this
@@ -59,9 +59,6 @@ Clear the cache and restart apache service. Use the ip address displayed by apac
 ```bash
 # refresh the cache
 php artisan config:cache
-
-#build assets
-npm run prod
 
 # run the migrations
 php artisan migrate --force
