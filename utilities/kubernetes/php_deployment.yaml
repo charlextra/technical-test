@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sgapmultitenant
+  name: technical-test
   labels:
     tier: backend
 spec:
@@ -21,8 +21,8 @@ spec:
         hostPath:
           path: /code            
       containers:
-      - name: sgapmultitenant
-        image: charlemagnepa/sgapmultitenant
+      - name: technical-test
+        image: charlemagnepa/technical-test
         volumeMounts:
         - name: dir
           mountPath: /code

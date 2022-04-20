@@ -20,12 +20,6 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        $headers = collect($users->first())->keys()->map(function ($item) {
-            return  ['data' => $item , 'name' => $item];
-        });
-
-        $columns = array_merge($headers->toArray(),[['data'=>'action', 'name'=>'action', 'orderable'=>'false']]);
-
         if ($request->ajax()) {
             return datatables()->of($users)
             ->addColumn('action', function ($row) {
@@ -131,7 +125,7 @@ class UserController extends Controller
         $appPrefix = 'App\Models';
         $modelName = $appPrefix.'\\'.$request->input('model');
 
-        $filtered = Arr::except($request->all(), ['_token', 'dataTable2_length', 'model_id', 'model', 'assignments']);
+        $filtered = Arr::except($request->all(), ['_token', 'model_id', 'model', 'assignments']);
         [$keys, $values] = Arr::divide($filtered);
         $assignments = [];
         foreach ($keys as $assignment) {

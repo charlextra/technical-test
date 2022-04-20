@@ -19,12 +19,6 @@ class GroupController extends Controller
         $groups = Group::all();
         $users = User::all();
 
-        $headers = collect($groups->first())->keys()->map(function ($item) {
-            return  ['data' => $item , 'name' => $item];
-        });
-
-        $columns = array_merge($headers->toArray(),[['data'=>'action', 'name'=>'action', 'orderable'=>'false']]);
-
         if ($request->ajax()) {
             return datatables()->of($groups)
                 ->addColumn('action', function ($row) {
@@ -35,7 +29,7 @@ class GroupController extends Controller
                 })->toJson();
         }
 
-        return view('groups.index', compact('groups', 'users', 'columns'));
+        return view('groups.index', compact('groups', 'users'));
     }
 
     /**
