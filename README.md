@@ -82,4 +82,4 @@ After all successfull steps the application will be accessible on http://localho
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Link to repository
-[Repository](https://github.com/charlextra/technical-test/edit/main/)
+[Repository](https://github.com/charlextra/technical-test)
